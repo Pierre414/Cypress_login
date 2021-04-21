@@ -1,9 +1,15 @@
 import { now } from "cypress/types/lodash";
 import { Page } from "./Page";
+import {Risk} from "./Risk";
+
 
 interface PageCreate {
   title: string;
   responsible: string;
+}
+
+interface RiskCreate{
+  title:string;
 }
 export class Overview {
   private readonly url: string;
@@ -27,5 +33,15 @@ export class Overview {
     cy.contains("div.topicselect_label", pageCreate.responsible).click();
     cy.get("#save").click();
     return new Page();
+  }
+  
+  public createRisk(riskCreate:RiskCreate){
+    cy.get('#modacSidebarTWO3show').click();
+    cy.get('div.modacSidebarTwisty').contains('Risiken').click();
+    cy.get("div.modacSidebarActions").contains('Neues Risiko anlegen').click();
+    cy.get('input.foswikiInputField.foswikiMandatory').should('exist');
+    cy.get('input.foswikiInputField.foswikiMandatory').type(riskCreate.title);
+    cy.get('#save').click();
+    return new Risk(riskCreate.title);
   }
 }
