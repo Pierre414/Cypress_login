@@ -1,22 +1,21 @@
-import {Overview} from './Overview'
+import { Overview } from "./Overview";
 
-interface QwikiLogin{
-  username:string,
-  password:string
+interface QwikiLogin {
+  username: string;
+  password: string;
 }
 export class Qwiki {
-  private readonly Url: string;
+  private readonly url: string;
 
-  constructor(Url: string) {
-    this.Url = Url;
+  constructor(url: string) {
+    this.url = url;
   }
 
-  public login(qwikiLogin:QwikiLogin) {
-    cy.visit(this.Url);
+  public login(qwikiLogin: QwikiLogin) {
+    cy.visit(this.url);
     cy.get("input.foswikiFocus").type(qwikiLogin.username);
     cy.get("input[name*='password']").type(qwikiLogin.password);
     cy.get("input.button.primary").click();
-    return new Overview(this.Url);
+    return new Overview(this.url);
   }
-
 }

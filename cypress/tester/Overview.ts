@@ -1,31 +1,31 @@
-import { now } from 'cypress/types/lodash';
-import {Page} from './Page'
+import { now } from "cypress/types/lodash";
+import { Page } from "./Page";
 
-interface PageCreate{
-  title:string,
-  inputResponsible:string
+interface PageCreate {
+  title: string;
+  inputResponsible: string;
 }
 export class Overview {
-  private readonly Url: string;
+  private readonly url: string;
 
-  constructor(Url: string) {
-    this.Url = Url;
+  constructor(url: string) {
+    this.url = url;
   }
 
-  public MapIsVisible() {
+  public isVisible() {
     cy.get("#map").should("exist");
   }
-  public createPage(pageCreate:PageCreate){
+  public createPage(pageCreate: PageCreate) {
     cy.get("[data-test='pageCreate'").click();
-    cy.get("div.ma-input:nth-child(3) > div:nth-child(2) > input:nth-child(1)").type(pageCreate.title);
-    cy.get("[data-test='create-page'").click({timeout: 12000});
-    cy.get('span.select2-selection__rendered').click({timeout: 12000});
-    cy.get('span.select2-container--open').find('input.select2-search__field').type(pageCreate.inputResponsible);
-    cy.get('div.topicselect_label').contains(pageCreate.inputResponsible).click({timeout:12000});
-    cy.get('#save').click();
-    return new Page;
+    cy.get("[data-test='titleInput'").type(pageCreate.title);
+    cy.get("[data-test='create-page'").should("be.visible");
+    cy.get("[data-test='create-page'").click();
+    cy.get("span.select2-selection__rendered").should("be.visible");
+    cy.get("span.select2-selection__rendered").click();
+    cy.get("span.select2-container--open").find("input.select2-search__field").type(pageCreate.inputResponsible);
+    cy.get("div.topicselect_label").should("be.visible");
+    cy.get("div.topicselect_label").contains(pageCreate.inputResponsible).click();
+    cy.get("#save").click();
+    return new Page();
   }
-  
-
-
 }
