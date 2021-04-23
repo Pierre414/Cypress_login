@@ -1,26 +1,14 @@
 import { contains } from "cypress/types/jquery";
 import { Qwiki } from "../../tester/Qwiki";
 
-context("qwiki",()=>{
-// it("can create and link a risk", () => {
-//   const qwiki = new Qwiki("https://dev.testing.modac.eu/");
-//   const overview = qwiki.login({username: "admin",password: "modell-aachen"});
-//   const risk = overview.submitPossibleRisk({ 
-//     title: "Nicht erkennen von Konkurrenten",
-//     linkedProcess:'Ziele und Strategien des Unternehmens' 
-//   });
-//   risk.hasInformation({ 
-//     title: "Nicht erkennen von Konkurrenten",
-//     linkedProcess:"Ziele und Strategien des Unternehmens",
-//     reportedBy:"Internal Admin User" 
-//   });
-//   risk.isAPossibleRisk();
-// });
+context("In Q.wiki",()=>{
 
-it("user StafanStandard can create and link a Risk",()=>{
-  const qwikiStefan = new Qwiki("https://dev.testing.modac.eu/");
-  const overviewStefan = qwikiStefan.login({username: "StefanStandard",password: "PW_StefanStandard"});
-  const risk = overviewStefan.submitPossibleRisk({ 
+  describe("as a standard user",()=>{
+it("can create and link a Risk",()=>{
+  const qwiki= new Qwiki("https://dev.testing.modac.eu/");
+  const overview = qwiki.login({username: "StefanStandard",password: "PW_StefanStandard"});
+  const riskOverview= overview.openRiskOverview();
+  const risk = overview.submitPossibleRisk({ 
     title: "Nicht erkennen von Konkurrenz",
     linkedProcess:'Ziele und Strategien des Unternehmens' 
   });
@@ -30,26 +18,32 @@ it("user StafanStandard can create and link a Risk",()=>{
       reportedBy:"StefanStandard" 
     });
   });
+  });
 
+  describe('as a Risk manager',()=>{
 it('can control a risk',()=>{
-  const qwikiRita = new Qwiki("https://dev.testing.modac.eu/");
-  const overviewRita = qwikiRita.login({username: "RitaRisiko",password: "PW_RitaRisiko"});
-  const risk=overviewRita.controlRisk({
-    Bedeutung:"3",
-    Auftretenswahrscheinlichkeit:"4",
-    Entdeckungswahrscheinlichkeit:"10"
+  const qwiki = new Qwiki("https://dev.testing.modac.eu/");
+  const overview = qwiki.login({username: "RitaRisiko",password: "PW_RitaRisiko"});
+  const riskOverview= overview.openRiskOverview();
+  const risk=riskOverview.openRisk({title:'Nicht erkennen von Konkurrenz',linkedProcess:'Ziele und Strategien des Unternehmens'});
+  risk.manage();
+  risk.rate({
+    Attendees:"Frederic Klein",
+    importance:"3",
+    probabilityOfOccurrence:"4",
+    probabilityOfDetectionn:"10"
   });
-  risk.hasInformation({
-    title: "Nicht erkennen von Konkurrenz",
-    linkedProcess:"Ziele und Strategien des Unternehmens",
-    reportedBy:"StefanStandard" 
-  });
-  risk.hasRanking({
-    Bedeutung:3,
-    Auftretenswahrscheinlichkeit:4,
-    Entdeckungswahrscheinlichkeit:10
-  })
-  
+  // risk.hasInformation({
+  //   title: "Nicht erkennen von Konkurrenz",
+  //   linkedProcess:"Ziele und Strategien des Unternehmens",
+  //   reportedBy:"StefanStandard" 
+  // });
+  // risk.hasRanking({
+  //   Bedeutung:3,
+  //   Auftretenswahrscheinlichkeit:4,
+  //   Entdeckungswahrscheinlichkeit:10
+  // })
+})  
 })
 
 });
