@@ -32,7 +32,7 @@ export class Risk {
     });
   }
   public manage(){
-    cy.get('button.ma-button.ma-button--primary.text-center').click();
+    cy.get('button.ma-button.ma-button--primary').click();
     cy.get('div.cell.small-11').should('contain', 'RitaRisiko')
   }
 
@@ -45,6 +45,6 @@ export class Risk {
     cy.get('tr.modacForm:contains("Teilnehmer") .select2 input').type(riskControl.Attendees);
     cy.contains("div.topicselect_label", riskControl.Attendees).click();
     cy.get('select[name="AcceptRisk"]').select('ja',{force: true});
-    // cy.get('#save').click()
+    cy.get('#save').click()
   }
 }
