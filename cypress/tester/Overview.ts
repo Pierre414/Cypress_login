@@ -1,23 +1,17 @@
 import { now } from "cypress/types/lodash";
 import { Page } from "./Page";
-import {Risk} from "./Risk";
-
+import { Risk } from "./Risk";
 
 interface PageCreate {
   title: string;
   responsible: string;
 }
 
-interface RiskCreate{
-  title:string,
-  linkedProcess:string
+interface RiskCreate {
+  title: string;
+  linkedProcess: string;
 }
 
-interface RiskControl{
-  Bedeutung:string,
-  Auftretenswahrscheinlichkeit:string,
-  Entdeckungswahrscheinlichkeit:string
-}
 export class Overview {
   private readonly url: string;
 
@@ -35,34 +29,38 @@ export class Overview {
     cy.get("[data-test='create-page'").click();
     cy.get("span.select2-selection__rendered").should("exist");
     cy.get("span.select2-selection__rendered").click();
-    cy.get("span.select2-container--open").find("input.select2-search__field").type(pageCreate.responsible);
+    cy.get("span.select2-container--open")
+      .find("input.select2-search__field")
+      .type(pageCreate.responsible);
     cy.get("div.topicselect_label").should("exist");
     cy.contains("div.topicselect_label", pageCreate.responsible).click();
     cy.get("#save").click();
     return new Page();
   }
-  
-  public submitPossibleRisk(riskCreate:RiskCreate){
-    cy.get('#modacSidebarTWO3show').click();
-    cy.get('div.modacSidebarTwisty').contains('Risiken').click();
-    cy.get("div.modacSidebarActions").contains('Neues Risiko anlegen').click();
-    cy.get('input.foswikiInputField.foswikiMandatory').should('exist');
-    cy.contains('.blockUI', 'Bitte warten').should('not.exist');
-    cy.get('input.foswikiInputField.foswikiMandatory').type(riskCreate.title);
-    cy.get('tr.modacForm:contains("Risikoquelle") .select2 input').type(riskCreate.linkedProcess);
-    cy.contains("div.topicselect_label", riskCreate.linkedProcess).click();
-    cy.get('#save').click();
+
+  public openRiskOverview() {
+    cy.get("#modacSidebarTWO3show").click();
+    cy.get("div.modacSidebarTwisty").contains("Risiken").click();
+    return new Overview(this.url);
+  }
+
+  public openRisk(riskCreate: RiskCreate) {
+    cy.get('[data-test="link"').contains(riskCreate.title).click();
     return new Risk(riskCreate.title);
   }
 
-  public controlRisk(riskControl:RiskControl){
-    cy.get('#modacSidebarTWO3show').click();
-    cy.get('div.modacSidebarTwisty').contains('Risiken').click();
-    cy.get('[data-test="link"').contains('Nicht erkennen von Konkurrenz').click();
-    cy.get('button.ma-button.ma-button--primary.text-center').click();
-    cy.get('div.cell.small-11').should('contain', 'RitaRisiko')
-    cy.get('a.modacChanging').contains('Bearbeiten').click();
-    cy.contains('.blockUI', 'Bitte warten').should('not.exist');
-    cy.contains('tr.modacForm:contains("Bedeutung") .select2',riskControl.Bedeutung).click();
+  public submitPossibleRisk(riskCreate: RiskCreate) {
+    cy.get("div.modacSidebarActions").contains("Neues Risiko anlegen").click();
+    cy.get("input.foswikiInputField.foswikiMandatory").should("exist");
+    cy.contains(".blockUI", "Bitte warten", { timeout: 10000 }).should(
+      "not.exist"
+    );
+    cy.get("input.foswikiInputField.foswikiMandatory").type(riskCreate.title);
+    cy.get('tr.modacForm:contains("Risikoquelle") .select2 input').type(
+      riskCreate.linkedProcess
+    );
+    cy.contains("div.topicselect_label", riskCreate.linkedProcess).click();
+    cy.get("#save").click();
+    return new Risk(riskCreate.title);
   }
 }
