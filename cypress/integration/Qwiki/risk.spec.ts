@@ -31,10 +31,8 @@ context("In Q.wiki", () => {
         password: "PW_RitaRisiko",
       });
       const riskOverview = overview.openRiskOverview();
-      const risk = riskOverview.openRisk({
-        title: "Nicht erkennen von Konkurrenz",
-        linkedProcess: "Ziele und Strategien des Unternehmens",
-      });
+      const risk = riskOverview.openRisk("Nicht erkennen von Konkurrenz");
+
       risk.manage();
       risk.rate({
         attendees: "Frederic Klein",
@@ -61,11 +59,12 @@ context("In Q.wiki", () => {
         password: "PW_RitaRisiko",
       });
       const riskOverview = overview.openRiskOverview();
-      const risk = riskOverview.openManagedRisk({
-        title: "Nicht erkennen von Konkurrenz",
-        linkedProcess: "Ziele und Strategien des Unternehmens",
-      });
-      const measure=risk.takeAction({
+      const risk = riskOverview.openManagedRisk(
+        "Nicht erkennen von Konkurrenz"
+      );
+
+      const measure = risk.takeAction({
+        title: "Beobachtung",
         description: "Die Konkurrenz und den Markt im Auge behalten",
         assignedTo: "Frederic Klein (MA)",
       });
@@ -73,8 +72,8 @@ context("In Q.wiki", () => {
       measure.hasInformations({
         description: "Die Konkurrenz und den Markt im Auge behalten",
         assignedTo: "Frederic Klein (MA)",
-        writer:"RitaRisiko"
-      })
+        writer: "RitaRisiko",
+      });
     });
 
     it("can discard a Risk", () => {
@@ -84,10 +83,9 @@ context("In Q.wiki", () => {
         password: "PW_RitaRisiko",
       });
       const riskOverview = overview.openRiskOverview();
-      const risk = riskOverview.openManagedRisk({
-        title: "Nicht erkennen von Konkurrenz",
-        linkedProcess: "Ziele und Strategien des Unternehmens",
-      });
+      const risk = riskOverview.openManagedRisk(
+        "Nicht erkennen von Konkurrenz"
+      );
       risk.discard();
       risk.isDiscarded();
     });

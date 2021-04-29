@@ -44,15 +44,15 @@ export class Overview {
     return new Overview(this.url);
   }
 
-  public openRisk(riskCreate: RiskCreate) {
-    cy.get('[data-test="link"').contains(riskCreate.title).click();
-    return new Risk(riskCreate.title);
+  public openRisk(riskTitle: string) {
+    cy.get('[data-test="link"').contains(riskTitle).click();
+    return new Risk(riskTitle);
   }
 
-  public openManagedRisk(riskCreate:RiskCreate){
-    cy.get('ul.jqTabGroup').contains('Gesteuert').click();
-    cy.get('[data-test="link"').contains(riskCreate.title).click();
-    return new Risk(riskCreate.title);
+  public openManagedRisk(riskTitle: string) {
+    cy.get("ul.jqTabGroup").contains("Gesteuert").click();
+    cy.get('[data-test="link"').contains(riskTitle).click();
+    return new Risk(riskTitle);
   }
 
   public submitPossibleRisk(riskCreate: RiskCreate) {
