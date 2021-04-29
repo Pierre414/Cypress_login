@@ -1,3 +1,4 @@
+import { Measure } from "./Measure";
 interface RiskData {
   title: string;
   linkedProcess: string;
@@ -9,7 +10,17 @@ interface RiskControl {
   probabilityOfOccurrence: string;
   probabilityOfDetectionn: string;
 }
+interface RiskNumber {
+  importance: number;
+  probabilityOfOccurrence: number;
+  probabilityOfDetectionn: number;
+}
 
+interface RiskTakeAction {
+  title: string;
+  description: string;
+  assignedTo: string;
+}
 export class Risk {
   readonly title: string;
 
@@ -35,25 +46,63 @@ export class Risk {
     cy.get("button.ma-button.ma-button--primary").click();
     cy.get("div.cell.small-11").should("contain", "RitaRisiko");
   }
-  
+
   public rate(riskControl: RiskControl) {
     cy.get("a.modacChanging").contains("Bearbeiten").click();
-    cy.contains(".blockUI", "Bitte warten", { timeout: 20000 }).should("not.exist");
-    cy.get('select[name="Severity"]').select(riskControl.importance, {force: true});
-    cy.get('select[name="Occurrence"]').select(riskControl.probabilityOfOccurrence, { force: true });
-    cy.get('select[name="Detection"]').select(riskControl.probabilityOfDetectionn, { force: true });
-    cy.get('tr.modacForm:contains("Teilnehmer") .select2 input').type(riskControl.attendees);
+    cy.contains(".blockUI", "Bitte warten", { timeout: 20000 }).should(
+      "not.exist"
+    );
+    cy.get('select[name="Severity"]').select(riskControl.importance, {
+      force: true,
+    });
+    cy.get(
+      'select[name="Occurrence"]'
+    ).select(riskControl.probabilityOfOccurrence, { force: true });
+    cy.get(
+      'select[name="Detection"]'
+    ).select(riskControl.probabilityOfDetectionn, { force: true });
+    cy.get('tr.modacForm:contains("Teilnehmer") .select2 input').type(
+      riskControl.attendees
+    );
     cy.contains("div.topicselect_label", riskControl.attendees).click();
     cy.get('select[name="AcceptRisk"]').select("ja", { force: true });
     cy.get("#save").click();
-  }
-
-  public hasRating(riskControl: RiskControl) {
     cy.get("table.metaDataHead").should((table) => {
       expect(table).to.contain(riskControl.attendees);
       expect(table).to.contain(riskControl.importance);
       expect(table).to.contain(riskControl.probabilityOfDetectionn);
       expect(table).to.contain(riskControl.probabilityOfOccurrence);
     });
+  }
+
+  public hasRiskPriorityNumberOf(riskNumber: RiskNumber) {
+    const RiskPriorityNumber =
+      riskNumber.importance *
+      riskNumber.probabilityOfDetectionn *
+      riskNumber.probabilityOfOccurrence;
+    cy.get("table.metaDataHead").should("contain", RiskPriorityNumber);
+  }
+
+  public takeAction(riskTakeAction: RiskTakeAction) {
+    cy.get("a.button.tasks-btn-create").click();
+    cy.contains(".blockUI", "Bitte warten", { timeout: 20000 }).should(
+      "not.exist"
+    );
+    cy.get('input[name="Title"]').type(riskTakeAction.title);
+    cy.get("div.cke_wysiwyg_div").type(riskTakeAction.description);
+    cy.get(".task-meta-entry:nth-child(3) .select2").click();
+    cy.focused().type(riskTakeAction.assignedTo);
+    cy.get(`.topicselect_label:contains(${riskTakeAction.assignedTo})`).click();
+    cy.get("i.fa.fa-save").click();
+    return new Measure(riskTakeAction.description, riskTakeAction.assignedTo);
+  }
+
+  public discard() {
+    cy.get("button.ma-button.ma-button--primary").click();
+    cy.get("button.swal2-confirm.ma-button.ma-button--primary").click();
+  }
+
+  public isDiscarded() {
+    cy.get('a[title="Verworfenes Risiko"]').should("exist");
   }
 }
