@@ -49,6 +49,12 @@ export class Overview {
     return new Risk(riskCreate.title);
   }
 
+  public openManagedRisk(riskCreate:RiskCreate){
+    cy.get('ul.jqTabGroup').contains('Gesteuert').click();
+    cy.get('[data-test="link"').contains(riskCreate.title).click();
+    return new Risk(riskCreate.title);
+  }
+
   public submitPossibleRisk(riskCreate: RiskCreate) {
     cy.get("div.modacSidebarActions").contains("Neues Risiko anlegen").click();
     cy.get("input.foswikiInputField.foswikiMandatory").should("exist");
